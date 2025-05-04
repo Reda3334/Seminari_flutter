@@ -7,9 +7,9 @@ import 'package:seminari_flutter/screens/imprimir_screen.dart';
 import 'package:seminari_flutter/screens/home_screen.dart';
 import 'package:seminari_flutter/screens/perfil_screen.dart';
 import 'package:seminari_flutter/services/auth_service.dart';
-
+import '../models/user.dart'; //importar el modelo User
 final GoRouter appRouter = GoRouter(
-  initialLocation: AuthService().isLoggedIn ? '/' : '/login',
+   initialLocation: AuthService().getCurrentUser() != null ? '/' : '/login',
   routes: [
     GoRoute(path: '/login', builder: (context, state) => LoginPage()),
     GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
@@ -29,7 +29,11 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: 'editar',
-          builder: (context, state) => const EditarScreen(),
+            builder: (context, state) {
+              final user = state.extra as User; // Recibir el usuario desde el argumento
+              return EditarScreen(user: user); // Pasar el usuario a EditarScreen
+            },
+
         ),
         GoRoute(
           path: 'borrar',
@@ -37,7 +41,16 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: 'profile',
-          builder: (context, state) => const PerfilScreen(),
+          builder: (context, state) {
+            final authService = AuthService();
+            final user = authService.getCurrentUser(); // Obtener el usuario logueado
+            print("Usuario actual: $user"); // Depuración
+            if (user == null) {
+              return LoginPage(); // Redirigir a la página de login si no hay usuario
+            }
+            return PerfilScreen(user: user); // Pasar el usuario a la pantalla de perfil
+          }
+          
         ),
       ],
     ),

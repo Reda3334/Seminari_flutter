@@ -75,4 +75,15 @@ class UserService {
       throw Exception('Error eliminant usuari: ${response.statusCode}');
     }
   }
+  // Actualitzar la contrasenya d'un usuari
+  static Future<bool> changePassword(String userId, String newPassword) async {
+    final url = Uri.parse('http://localhost:9000/api/users/$userId/password');
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'password': newPassword}),
+    );
+
+    return response.statusCode == 200;
+  }
 }

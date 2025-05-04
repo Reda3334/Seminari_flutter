@@ -103,4 +103,54 @@ class UserProvider with ChangeNotifier {
       return false;
     }
   }
+  // Método para editar un usuario
+Future<bool> editarUsuari(String userId, String name, int age, String email) async {
+  _setLoading(true);
+  _setError(null);
+
+  try {
+    final updatedUser = User(
+      id: userId,
+      name: name,
+      age: age,
+      email: email,
+      password: '',
+    );
+
+    final updatedUserFromBackend = await UserService.updateUser(userId, updatedUser);
+
+    if (updatedUserFromBackend != null) {
+      final index = _users.indexWhere((user) => user.id == userId);
+      if (index != -1) {
+        _users[index] = updatedUserFromBackend;
+        notifyListeners();
+      }
+      _setLoading(false);
+      return true;
+    } else {
+      _setLoading(false);
+      return false;
+    }
+  } catch (e) {
+    _setError('Error updating user: $e');
+    _setLoading(false);
+    return false;
+  }
+}
+
+// Método para cambiar la contraseña
+Future<bool> canviarContrasenya(String userId, String newPassword) async {
+  _setLoading(true);
+  _setError(null);
+
+  try {
+    final success = await UserService.changePassword(userId, newPassword); // Llama al servicio para cambiar la contraseña
+    _setLoading(false);
+    return success;
+  } catch (e) {
+    _setError('Error changing password: $e');
+    _setLoading(false);
+    return false;
+  }
+}
 }
