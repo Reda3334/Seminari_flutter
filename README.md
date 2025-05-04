@@ -1,4 +1,5 @@
-# seminari_flutter
+# ejercicio seminari_flutter
+mostrar los datos del usuario loguedo funciona perfecto, he implementado la logica para update user pero como se puede ver en el video me da problemas de argumentos que no supe corregir
 
 A new Flutter project.
 
